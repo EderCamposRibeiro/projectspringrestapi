@@ -1,40 +1,45 @@
 package project.api.rest.controller;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import project.api.rest.model.System_User;
+import project.api.rest.repository.UserRepository;
 
 @RestController/*REST Architecture*/
 @RequestMapping(value = "/user")
 public class IndexController {
 	
+	@Autowired /*If was a CDI would be a @Inject*/
+	private UserRepository userRepository;
+	
 	/*RESTful service*/
+	@GetMapping(value = "/{id}", produces = "application/json")
+	public ResponseEntity<System_User> init(@PathVariable(value = "id") Long id) {
+		
+		Optional<System_User> user = userRepository.findById(id);
+		
+		return new ResponseEntity<System_User>(user.get(), HttpStatus.OK);
+	}
+	
 	@GetMapping(value = "/", produces = "application/json")
-	public ResponseEntity<System_User> init() {
+	public ResponseEntity<List<System_User>> users (){
 		
-		System_User sysuser = new System_User();
-		sysuser.setId(50L);
-		sysuser.setLogin("edercribeiro@gmail.com");
-		sysuser.setName("Eder Campos Ribeiro Mazzoccante");
-		sysuser.setPassword("ABcd1234");
+		List<System_User> list = (List<System_User>) userRepository.findAll();
 		
-		System_User sysuser2 = new System_User();
-		sysuser2.setId(51L);
-		sysuser2.setLogin("ederteste@gmail.com");
-		sysuser2.setName("Eder Campos Ribeiro");
-		sysuser2.setPassword("00223200");		
-		
-		List<System_User> users = new ArrayList<System_User>();
-		users.add(sysuser);
-		users.add(sysuser2);
-		
-		return new ResponseEntity(users, HttpStatus.OK);
+		return new ResponseEntity<List<System_User>>(list, HttpStatus.OK);
 	}
 }
+
+
+
+
+
