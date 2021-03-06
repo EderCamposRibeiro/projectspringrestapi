@@ -22,6 +22,17 @@ public class IndexController {
 	private UserRepository userRepository;
 	
 	/*RESTful service*/
+	@GetMapping(value = "/{id}/salecode/{sale}", produces = "application/pdf")
+	public ResponseEntity<System_User> report(@PathVariable(value = "id") Long id
+			                                , @PathVariable(value = "sale") Long sale) {
+		
+		Optional<System_User> user = userRepository.findById(id);
+		
+		/*The return would be a report/sale report!*/
+		return new ResponseEntity<System_User>(user.get(), HttpStatus.OK);
+	}	
+	
+	/*RESTful service*/
 	@GetMapping(value = "/{id}", produces = "application/json")
 	public ResponseEntity<System_User> init(@PathVariable(value = "id") Long id) {
 		
