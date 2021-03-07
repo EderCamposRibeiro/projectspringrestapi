@@ -19,7 +19,7 @@ import project.api.rest.model.System_User;
 import project.api.rest.repository.UserRepository;
 
 @RestController/*REST Architecture*/
-@RequestMapping(value = "/user")
+@RequestMapping(value = "/users")
 public class IndexController {
 	
 	@Autowired /*If was a CDI would be a @Inject*/
