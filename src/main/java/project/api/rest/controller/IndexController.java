@@ -86,7 +86,9 @@ public class IndexController {
 	@PutMapping(value = "/", produces = "application/json")
 	public ResponseEntity<System_User> update(@RequestBody System_User system_user){
 		
-		/*Other routines before update*/
+		for (int pos = 0; pos < system_user.getTelephones().size(); pos++) {
+			system_user.getTelephones().get(pos).setUser(system_user);
+		}
 		
 		System_User saveduser = userRepository.save(system_user);
 		
