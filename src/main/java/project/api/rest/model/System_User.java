@@ -1,11 +1,15 @@
 package project.api.rest.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
 public class System_User implements Serializable{
@@ -13,7 +17,7 @@ public class System_User implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
 	private String login;
@@ -21,6 +25,17 @@ public class System_User implements Serializable{
 	private String password;
 	
 	private String name;
+	
+	@OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
+	private List<Telephone> telephones = new ArrayList<Telephone>();
+	
+	public List<Telephone> getTelephones() {
+		return telephones;
+	}
+	
+	public void setTelephones(List<Telephone> telephones) {
+		this.telephones = telephones;
+	}
 
 	public Long getId() {
 		return id;

@@ -64,6 +64,10 @@ public class IndexController {
 	@PostMapping(value = "/", produces = "application/json")
 	public ResponseEntity<System_User> register(@RequestBody System_User system_user){
 		
+		for (int pos = 0; pos < system_user.getTelephones().size(); pos++) {
+			system_user.getTelephones().get(pos).setUser(system_user);
+		}
+		
 		System_User saveduser = userRepository.save(system_user);
 		
 		return new ResponseEntity<System_User>(saveduser, HttpStatus.OK);
