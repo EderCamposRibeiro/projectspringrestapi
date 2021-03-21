@@ -26,7 +26,7 @@ public class IndexController {
 	private UserRepository userRepository;
 	
 	/*RESTful service*/
-	@GetMapping(value = "/{id}/salecode/{sale}", produces = "application/json")
+	@GetMapping(value = "/{id}/salecode/{sale}", produces = "application/jsonp")
 	public ResponseEntity<System_User> report(@PathVariable(value = "id") Long id
 			                                , @PathVariable(value = "sale") Long sale) {
 		
