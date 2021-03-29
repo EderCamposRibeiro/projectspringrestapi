@@ -1,19 +1,27 @@
 package project.api.rest.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
+import javax.persistence.UniqueConstraint;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
-public class System_User implements Serializable{
+public class System_User implements UserDetails{
 	
 	private static final long serialVersionUID = 1L;
 
@@ -27,8 +35,18 @@ public class System_User implements Serializable{
 	
 	private String name;
 	
-	@OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<Telephone> telephones = new ArrayList<Telephone>();
+	
+	@OneToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "users_role", uniqueConstraints = @UniqueConstraint (
+			   columnNames = {"user_id","role_id"}, name = "unique_role_user"),
+			joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id", table = "user", unique = false,
+			foreignKey = @ForeignKey (name = "user_fk", value = ConstraintMode.CONSTRAINT)),
+			
+			inverseJoinColumns = @JoinColumn (name = "role_id", referencedColumnName = "id", table = "role", unique = false, updatable = false,
+					foreignKey = @ForeignKey (name="role_fk", value = ConstraintMode.CONSTRAINT)))
+	private List<Role> roles; /*The roles or access*/
 	
 	public List<Telephone> getTelephones() {
 		return telephones;
@@ -54,8 +72,9 @@ public class System_User implements Serializable{
 		this.login = login;
 	}
 
+	@Override
 	public String getPassword() {
-		return password;
+		return this.password;
 	}
 
 	public void setPassword(String password) {
@@ -94,6 +113,40 @@ public class System_User implements Serializable{
 			return false;
 		return true;
 	}
+
+	/*There are the user's access: ROLE_ADMIN or ROLE_VISITOR*/
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return roles;
+	}
 	
-	
+	/*@Override -> 
+	public String getPassword() {
+		return this.password;
+	}*/
+
+	@Override
+	public String getUsername() {
+		return this.login;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
 }
