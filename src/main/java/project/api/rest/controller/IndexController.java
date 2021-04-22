@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -68,6 +69,8 @@ public class IndexController {
 			system_user.getTelephones().get(pos).setUser(system_user);
 		}
 		
+		String criptoPassword = new BCryptPasswordEncoder().encode(system_user.getPassword());
+		system_user.setPassword(criptoPassword);
 		System_User saveduser = userRepository.save(system_user);
 		
 		return new ResponseEntity<System_User>(saveduser, HttpStatus.OK);
@@ -88,6 +91,13 @@ public class IndexController {
 		
 		for (int pos = 0; pos < system_user.getTelephones().size(); pos++) {
 			system_user.getTelephones().get(pos).setUser(system_user);
+		}
+		
+		System_User userTemp = userRepository.findUserByLogin(system_user.getLogin());
+		
+		if (!userTemp.getPassword().equals(system_user.getPassword())) { /*Different passwords*/
+			String criptoPassword = new BCryptPasswordEncoder().encode(system_user.getPassword());
+			system_user.setPassword(criptoPassword);
 		}
 		
 		System_User saveduser = userRepository.save(system_user);
