@@ -38,11 +38,20 @@ public class IndexController {
 	}	
 	
 	/*RESTful service*/
-	@GetMapping(value = "/{id}", produces = "application/json")
-	public ResponseEntity<System_User> init(@PathVariable(value = "id") Long id) {
+	@GetMapping(value = "/{id}", produces = "application/json", headers = "X-API-Version=v1")
+	public ResponseEntity<System_User> initV1(@PathVariable(value = "id") Long id) {
 		
 		Optional<System_User> user = userRepository.findById(id);
+		System.out.println("Processing version 1");
+		return new ResponseEntity<System_User>(user.get(), HttpStatus.OK);
+	}
+	
+	/*RESTful service*/
+	@GetMapping(value = "/{id}", produces = "application/json", headers = "X-API-Version=v2")
+	public ResponseEntity<System_User> initV2(@PathVariable(value = "id") Long id) {
 		
+		Optional<System_User> user = userRepository.findById(id);
+		System.out.println("Processing version 2");		
 		return new ResponseEntity<System_User>(user.get(), HttpStatus.OK);
 	}
 	
