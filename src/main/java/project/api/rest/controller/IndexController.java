@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -42,6 +43,8 @@ public class IndexController {
 	/*We are going to suppose that the user charging is a slow process
 	 * and we want to control it with cache to make the process faster*/
 	@GetMapping(value = "/{id}", produces = "application/json", headers = "X-API-Version=v1")
+	@CacheEvict(value = "cacheuserV1", allEntries = true)
+	@CachePut("cacheuserV1")		
 	public ResponseEntity<System_User> initV1(@PathVariable(value = "id") Long id){
 		
 		Optional<System_User> user = userRepository.findById(id);
@@ -52,6 +55,8 @@ public class IndexController {
 	
 	/*RESTful service*/
 	@GetMapping(value = "/{id}", produces = "application/json", headers = "X-API-Version=v2")
+	@CacheEvict(value = "cacheuserV2", allEntries = true)
+	@CachePut("cacheuserV2")	
 	public ResponseEntity<System_User> initV2(@PathVariable(value = "id") Long id) {
 		
 		Optional<System_User> user = userRepository.findById(id);
@@ -68,12 +73,13 @@ public class IndexController {
 	}
 	
 	@GetMapping(value = "/", produces = "application/json")
-	@Cacheable("cacheusers")
+	@CacheEvict(value = "cacheusers", allEntries = true)
+	@CachePut("cacheusers")
 	public ResponseEntity<List<System_User>> users () throws InterruptedException{
 		
 		List<System_User> list = (List<System_User>) userRepository.findAll();
 		
-		Thread.sleep(6000); /*It hold on a process for about 6 seconds to simulate a slow execution*/
+		//Thread.sleep(6000); /*It hold on a process for about 6 seconds to simulate a slow execution*/
 		
 		return new ResponseEntity<List<System_User>>(list, HttpStatus.OK);
 	}
