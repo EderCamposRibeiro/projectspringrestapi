@@ -47,21 +47,26 @@ public class JWTTokenAuthenticationService {
 		/*Add in the http header*/
 		response.addHeader(HEADER_STRING, token); /*Authorization: Bearer 998dssf989sfs98s9f8sfs98s9...*/
 		
+		/*Releasing response to different doors that uses the API or case web clients*/
+		releaseCors(response);
+		
 		/*Write the token as a response in the http body*/
 		response.getWriter().write("{\"Authorization\": \""+token+"\"}");
 	}
 	
 	/*Return validated user with token or in case it isn't valid return null*/
-	public Authentication getAuthentication(HttpServletRequest request) {
+	public Authentication getAuthentication(HttpServletRequest request, HttpServletResponse response) {
 		
 		/*Get the token sent in the http header*/
 		String token = request.getHeader(HEADER_STRING);
 		
 		if (token != null) {
 			
+			String cleanToken = token.replace(TOKEN_PREFIX, "");
+			
 			/*Validates the user's token in the request*/
 			String user = Jwts.parser().setSigningKey(SECRET) /*-> Bearer 998dssf989sfs98s9f8sfs98s9...*/
-					          .parseClaimsJws(token.replace(TOKEN_PREFIX, "")) /*-> 998dssf989sfs98s9f8sfs98s9...*/
+					          .parseClaimsJws(cleanToken) /*-> 998dssf989sfs98s9f8sfs98s9...*/
 					          .getBody().getSubject(); /*John Smith*/
 			
 			if (user != null) {
@@ -77,7 +82,30 @@ public class JWTTokenAuthenticationService {
 				}
 			}
 		} 
+		
+		releaseCors(response);
+		
 		return null; /*Not authorized*/
+		
+	}
+
+	private void releaseCors(HttpServletResponse response) {
+
+		if (response.getHeader("Access-Control-Allow-Origin") == null) {
+			response.addHeader("Access-Control-Allow-Origin", "*");
+		}
+		
+		if (response.getHeader("Access-Control-Allow-Headers") == null) {
+			response.addHeader("Access-Control-Allow-Headers", "*");
+		}
+		
+		if (response.getHeader("Access-Control-Request-Headers") == null) {
+			response.addHeader("Access-Control-Request-Headers", "*");
+		}
+		
+		if (response.getHeader("Access-Control-Allow-Methods") == null) {
+			response.addHeader("Access-Control-Allow-Methods", "*");
+		}
 		
 	}
 	

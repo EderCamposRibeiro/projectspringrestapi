@@ -39,6 +39,16 @@ public class System_User implements UserDetails{
 	
 	private String name;
 	
+	private String token = "";
+	
+	public void setToken(String token) {
+		this.token = token;
+	}
+	
+	public String getToken() {
+		return token;
+	}
+	
 	@OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<Telephone> telephones = new ArrayList<Telephone>();
 	
