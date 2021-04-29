@@ -6,13 +6,18 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.BeansException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import project.api.rest.ApplicationContextLoad;
 import project.api.rest.model.System_User;
 import project.api.rest.repository.UserRepository;
@@ -23,6 +28,7 @@ public class JWTTokenAuthenticationService {
 	
 	/*Token validation time - 2 days*/
 	private static final long EXPIRATION_TIME = 172800000;
+//	private static final long EXPIRATION_TIME = 1;	
 	
 	/*Only one password to compose the authentication and help the security*/
 	private static final String SECRET = "SenhaExtremamenteSecreta";
@@ -60,28 +66,34 @@ public class JWTTokenAuthenticationService {
 		/*Get the token sent in the http header*/
 		String token = request.getHeader(HEADER_STRING);
 		
-		if (token != null) {
-			
-			String cleanToken = token.replace(TOKEN_PREFIX, "");
-			
-			/*Validates the user's token in the request*/
-			String user = Jwts.parser().setSigningKey(SECRET) /*-> Bearer 998dssf989sfs98s9f8sfs98s9...*/
-					          .parseClaimsJws(cleanToken) /*-> 998dssf989sfs98s9f8sfs98s9...*/
-					          .getBody().getSubject(); /*John Smith*/
-			
-			if (user != null) {
+		try {
+			if (token != null) {
 				
-				System_User suser = ApplicationContextLoad.getApplicationContext()
-						          .getBean(UserRepository.class).findUserByLogin(user);
+				String cleanToken = token.replace(TOKEN_PREFIX, "");
 				
-				if (suser != null) {
-					return new UsernamePasswordAuthenticationToken(
-							suser.getLogin(),
-							suser.getPassword(),
-							suser.getAuthorities());
+				/*Validates the user's token in the request*/
+				String user = Jwts.parser().setSigningKey(SECRET) /*-> Bearer 998dssf989sfs98s9f8sfs98s9...*/
+						          .parseClaimsJws(cleanToken) /*-> 998dssf989sfs98s9f8sfs98s9...*/
+						          .getBody().getSubject(); /*John Smith*/
+				
+				if (user != null) {
+					
+					System_User suser = ApplicationContextLoad.getApplicationContext()
+							          .getBean(UserRepository.class).findUserByLogin(user);
+					
+					if (suser != null) {
+						return new UsernamePasswordAuthenticationToken(
+								suser.getLogin(),
+								suser.getPassword(),
+								suser.getAuthorities());
+					}
 				}
-			}
-		} 
+			} /*End of condition Token*/
+		} catch (ExpiredJwtException e) {
+			try {
+				response.getOutputStream().println("Your TOKEN is expired, login or enter a new token.");
+			} catch (IOException e1) {}
+		}
 		
 		releaseCors(response);
 		
