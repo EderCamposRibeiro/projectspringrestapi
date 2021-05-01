@@ -39,6 +39,8 @@ public class System_User implements UserDetails{
 	
 	private String name;
 	
+	private String cpf;
+	
 	private String token = "";
 	
 	public void setToken(String token) {
@@ -64,6 +66,14 @@ public class System_User implements UserDetails{
 	
 	public List<Telephone> getTelephones() {
 		return telephones;
+	}
+	
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}
+	
+	public String getCpf() {
+		return cpf;
 	}
 	
 	public void setTelephones(List<Telephone> telephones) {

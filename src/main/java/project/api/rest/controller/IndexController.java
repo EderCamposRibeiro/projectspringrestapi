@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import project.api.rest.model.System_User;
+import project.api.rest.model.UserDTO;
 import project.api.rest.repository.UserRepository;
 
 @RestController/*REST Architecture*/
@@ -45,12 +46,12 @@ public class IndexController {
 	@GetMapping(value = "/{id}", produces = "application/json", headers = "X-API-Version=v1")
 	@CacheEvict(value = "cacheuserV1", allEntries = true)
 	@CachePut("cacheuserV1")		
-	public ResponseEntity<System_User> initV1(@PathVariable(value = "id") Long id){
+	public ResponseEntity<UserDTO> initV1(@PathVariable(value = "id") Long id){
 		
 		Optional<System_User> user = userRepository.findById(id);
 		
 		System.out.println("Processing version 1");
-		return new ResponseEntity<System_User>(user.get(), HttpStatus.OK);
+		return new ResponseEntity<UserDTO>(new UserDTO(user.get()), HttpStatus.OK);
 	}
 	
 	/*RESTful service*/
