@@ -53,6 +53,9 @@ public class JWTTokenAuthenticationService {
 		/*Add in the http header*/
 		response.addHeader(HEADER_STRING, token); /*Authorization: Bearer 998dssf989sfs98s9f8sfs98s9...*/
 		
+		ApplicationContextLoad.getApplicationContext()
+        .getBean(UserRepository.class).updateTokeUser(JWT, username); /*JWT is the token without "Bearer"*/
+		
 		/*Releasing response to different doors that uses the API or case web clients*/
 		releaseCors(response);
 		

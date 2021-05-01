@@ -1,5 +1,11 @@
 package project.api.rest.controller;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +23,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.google.gson.Gson;
 
 import project.api.rest.model.System_User;
 import project.api.rest.model.UserDTO;
@@ -86,11 +94,37 @@ public class IndexController {
 	}
 	
 	@PostMapping(value = "/", produces = "application/json")
-	public ResponseEntity<System_User> register(@RequestBody System_User system_user){
+	public ResponseEntity<System_User> register(@RequestBody System_User system_user) throws Exception{
 		
 		for (int pos = 0; pos < system_user.getTelephones().size(); pos++) {
 			system_user.getTelephones().get(pos).setUser(system_user);
 		}
+		
+		/*Consuming externa public API => Start*/
+		URL url = new URL("https://viacep.com.br/ws/"+system_user.getCep()+"/json/");
+		URLConnection connection = url.openConnection();
+		InputStream is = connection.getInputStream();
+		BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+		
+		String cep = "";
+		StringBuilder jsonCep = new StringBuilder();
+		
+		while ((cep = br.readLine()) != null) {
+			jsonCep.append(cep);
+		}
+		
+		System.out.println(jsonCep.toString());
+		
+		System_User userAux = new Gson().fromJson(jsonCep.toString(), System_User.class);
+		
+		system_user.setCep(userAux.getCep());
+		system_user.setLogradouro(userAux.getLogradouro());
+		system_user.setComplemento(userAux.getComplemento());
+		system_user.setBairro(userAux.getBairro());
+		system_user.setLocalidade(userAux.getLocalidade());
+		system_user.setUf(userAux.getUf());
+				
+		/*Consuming externa public API => End*/
 		
 		String criptoPassword = new BCryptPasswordEncoder().encode(system_user.getPassword());
 		system_user.setPassword(criptoPassword);
