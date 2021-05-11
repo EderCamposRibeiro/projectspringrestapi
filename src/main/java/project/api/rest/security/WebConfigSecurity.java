@@ -11,13 +11,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import project.api.rest.service.ImplementationUserDetailsService;
 
 /*Mapping URLs, address, allow or deny the access to URL*/
 @Configuration
 @EnableWebSecurity
-public class WebConfigSecurity extends WebSecurityConfigurerAdapter{
+public class WebConfigSecurity extends WebSecurityConfigurerAdapter implements WebMvcConfigurer{
 	
 	@Autowired
 	private ImplementationUserDetailsService implementationUserDetailsService;
@@ -58,6 +60,14 @@ public class WebConfigSecurity extends WebSecurityConfigurerAdapter{
 		/*Pattern of password's codification*/
 		.passwordEncoder(new BCryptPasswordEncoder());
 			
+	}
+	
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping("/**")
+			.allowedOrigins("http://localhost:4200")
+			.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS",  "HEAD", "TRACE", "CONNECT");
+		
 	}
 	
 }
