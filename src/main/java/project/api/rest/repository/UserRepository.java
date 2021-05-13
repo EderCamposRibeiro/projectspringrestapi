@@ -1,5 +1,7 @@
 package project.api.rest.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -13,6 +15,9 @@ public interface UserRepository extends CrudRepository<System_User, Long> {
 	
 	@Query("select u from System_User u where u.login = ?1")
 	System_User findUserByLogin(String login);
+	
+	@Query("select u from System_User u where u.name like %?1%")
+	List<System_User> findUserByName(String name);	
 	
 	@Transactional
 	@Modifying

@@ -3,7 +3,6 @@ package project.api.rest.controller;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
@@ -89,6 +88,17 @@ public class IndexController {
 		List<System_User> list = (List<System_User>) userRepository.findAll();
 		
 		//Thread.sleep(6000); /*It hold on a process for about 6 seconds to simulate a slow execution*/
+		
+		return new ResponseEntity<List<System_User>>(list, HttpStatus.OK);
+	}
+
+	/*END-POINT find user by name*/
+	@GetMapping(value = "/userByName/{name}", produces = "application/json")
+	@CacheEvict(value = "cacheusers", allEntries = true)
+	@CachePut("cacheusers")
+	public ResponseEntity<List<System_User>> userByName (@PathVariable("name") String name) throws InterruptedException{
+		
+		List<System_User> list = (List<System_User>) userRepository.findUserByName(name);
 		
 		return new ResponseEntity<List<System_User>>(list, HttpStatus.OK);
 	}
