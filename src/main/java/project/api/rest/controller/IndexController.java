@@ -47,7 +47,18 @@ public class IndexController {
 		return new ResponseEntity<System_User>(user.get(), HttpStatus.OK);
 	}	
 	
-	/*RESTful service*/
+	/* Serviço RESTful */
+	@GetMapping(value = "/{id}", produces = "application/json")
+	@CacheEvict(value = "cacheuser", allEntries = true)
+	@CachePut("cacheuser")
+	public ResponseEntity<System_User> init(@PathVariable (value = "id") Long id) {
+		
+		Optional<System_User> user = userRepository.findById(id);
+		
+		return new ResponseEntity<System_User>(user.get(), HttpStatus.OK);
+	}	
+	
+	/*RESTful service/*
 	/*We are going to suppose that the user charging is a slow process
 	 * and we want to control it with cache to make the process faster*/
 	@GetMapping(value = "/{id}", produces = "application/json", headers = "X-API-Version=v1")
