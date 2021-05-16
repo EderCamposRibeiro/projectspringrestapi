@@ -18,6 +18,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -39,6 +40,7 @@ public class System_User implements UserDetails{
 	
 	private String name;
 	
+	@CPF(message = "Invalid CPF!")
 	private String cpf;
 	
 	private String token = "";
@@ -64,12 +66,12 @@ public class System_User implements UserDetails{
 	@OneToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "users_role", uniqueConstraints = @UniqueConstraint (
 			   columnNames = {"user_id","role_id"}, name = "unique_role_user"),
-			joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id", table = "user", unique = false,
-			foreignKey = @ForeignKey (name = "user_fk", value = ConstraintMode.CONSTRAINT)),
+	joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id", table = "user", unique = false,
+	foreignKey = @ForeignKey (name = "user_fk", value = ConstraintMode.CONSTRAINT)),
 			
-			inverseJoinColumns = @JoinColumn (name = "role_id", referencedColumnName = "id", table = "role", unique = false, updatable = false,
-					foreignKey = @ForeignKey (name="role_fk", value = ConstraintMode.CONSTRAINT)))
-	private List<Role> roles; /*The roles or access*/
+	inverseJoinColumns = @JoinColumn (name = "role_id", referencedColumnName = "id", table = "role", unique = false, updatable = false,
+	foreignKey = @ForeignKey (name="role_fk", value = ConstraintMode.CONSTRAINT)))
+	private List<Role> roles = new ArrayList<Role>(); /*The roles or access*/
 	
 	public List<Telephone> getTelephones() {
 		return telephones;

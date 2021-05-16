@@ -171,7 +171,7 @@ public class IndexController {
 			system_user.getTelephones().get(pos).setUser(system_user);
 		}
 		
-		System_User userTemp = userRepository.findUserByLogin(system_user.getLogin());
+		System_User userTemp = userRepository.findById(system_user.getId()).get();
 		
 		if (!userTemp.getPassword().equals(system_user.getPassword())) { /*Different passwords*/
 			String criptoPassword = new BCryptPasswordEncoder().encode(system_user.getPassword());
