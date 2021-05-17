@@ -121,29 +121,27 @@ public class IndexController {
 			system_user.getTelephones().get(pos).setUser(system_user);
 		}
 		
-		/*Consuming externa public API => Start*/
-		URL url = new URL("https://viacep.com.br/ws/"+system_user.getCep()+"/json/");
-		URLConnection connection = url.openConnection();
-		InputStream is = connection.getInputStream();
-		BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-		
-		String cep = "";
-		StringBuilder jsonCep = new StringBuilder();
-		
-		while ((cep = br.readLine()) != null) {
-			jsonCep.append(cep);
+		if (system_user.getCep() != null) {
+			/*Consuming externa public API => Start*/
+			URL url = new URL("https://viacep.com.br/ws/" + system_user.getCep() + "/json/");
+			URLConnection connection = url.openConnection();
+			InputStream is = connection.getInputStream();
+			BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+			String cep = "";
+			StringBuilder jsonCep = new StringBuilder();
+			while ((cep = br.readLine()) != null) {
+				jsonCep.append(cep);
+			}
+			System.out.println(jsonCep.toString());
+			System_User userAux = new Gson().fromJson(jsonCep.toString(), System_User.class);
+			system_user.setCep(userAux.getCep());
+			system_user.setLogradouro(userAux.getLogradouro());
+			system_user.setComplemento(userAux.getComplemento());
+			system_user.setBairro(userAux.getBairro());
+			system_user.setLocalidade(userAux.getLocalidade());
+			system_user.setUf(userAux.getUf());
 		}
 		
-		System.out.println(jsonCep.toString());
-		
-		System_User userAux = new Gson().fromJson(jsonCep.toString(), System_User.class);
-		
-		system_user.setCep(userAux.getCep());
-		system_user.setLogradouro(userAux.getLogradouro());
-		system_user.setComplemento(userAux.getComplemento());
-		system_user.setBairro(userAux.getBairro());
-		system_user.setLocalidade(userAux.getLocalidade());
-		system_user.setUf(userAux.getUf());
 				
 		/*Consuming externa public API => End*/
 		
