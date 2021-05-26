@@ -22,9 +22,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class ControlExceptions extends ResponseEntityExceptionHandler{
 	
 	/*Intercept common project errors*/
-	@ExceptionHandler({Exception.class, RuntimeException.class, Throwable.class})
+
 	@Override
-	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
+	@ExceptionHandler({Exception.class, RuntimeException.class, Throwable.class})	
+	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, 
 			HttpStatus status, WebRequest request) {
 		
 		String msg = "";
@@ -42,11 +43,11 @@ public class ControlExceptions extends ResponseEntityExceptionHandler{
 		objectErrors.setError(msg);
 		objectErrors.setCode(status.value() + " ==> " + status.getReasonPhrase());		
 		
-		return new ResponseEntity<Object>(objectErrors, headers, status);
+		return new ResponseEntity<>(objectErrors, headers, status);
 	}
 	
 	/*Handle with the majority of errors on database level.*/
-	@ExceptionHandler({DataIntegrityViolationException.class, ConstraintViolationException.class,
+	@ExceptionHandler({DataIntegrityViolationException.class, ConstraintViolationException.class, 
 		PSQLException.class, SQLException.class})
 	protected ResponseEntity<Object> handleExceptionDataIntegry(Exception ex) {
 		

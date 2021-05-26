@@ -40,8 +40,8 @@ public class System_User implements UserDetails{
 	
 	private String name;
 	
-	@CPF(message = "Invalid CPF!")
-	private String cpf = "";
+	@CPF(message = "Invalid CPF")
+	private String cpf;
 	
 	private String token = "";
 	

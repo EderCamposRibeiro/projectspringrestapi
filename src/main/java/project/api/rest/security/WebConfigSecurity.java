@@ -34,6 +34,7 @@ public class WebConfigSecurity extends WebSecurityConfigurerAdapter implements W
 		/*Activating the access permission to the first page of the system. For example: system.com.br/index.html/*/
 		.disable().authorizeRequests().antMatchers("/").permitAll()
 		.antMatchers("/index").permitAll()
+		.antMatchers(HttpMethod.POST,"/**").permitAll()
 		
 		.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 		

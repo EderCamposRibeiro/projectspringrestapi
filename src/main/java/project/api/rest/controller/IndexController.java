@@ -8,6 +8,8 @@ import java.net.URLConnection;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -115,7 +117,7 @@ public class IndexController {
 	}
 	
 	@PostMapping(value = "/", produces = "application/json")
-	public ResponseEntity<System_User> register(@RequestBody System_User system_user) throws Exception{
+	public ResponseEntity<System_User> register(@RequestBody @Valid System_User system_user) throws Exception{
 		
 		for (int pos = 0; pos < system_user.getTelephones().size(); pos++) {
 			system_user.getTelephones().get(pos).setUser(system_user);
