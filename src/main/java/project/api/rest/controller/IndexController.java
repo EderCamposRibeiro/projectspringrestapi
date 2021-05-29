@@ -30,6 +30,7 @@ import com.google.gson.Gson;
 import project.api.rest.model.System_User;
 import project.api.rest.model.UserDTO;
 import project.api.rest.repository.UserRepository;
+import project.api.rest.service.ImplementationUserDetailsService;
 
 @RestController/*REST Architecture*/
 @RequestMapping(value = "/users")
@@ -37,6 +38,9 @@ public class IndexController {
 	
 	@Autowired /*If was a CDI would be a @Inject*/
 	private UserRepository userRepository;
+	
+	@Autowired
+	private ImplementationUserDetailsService implementationUserDetailsService;
 	
 	/*RESTful service*/
 	@GetMapping(value = "/{id}/salecode/{sale}", produces = "application/jsonp")
@@ -150,6 +154,8 @@ public class IndexController {
 		String criptoPassword = new BCryptPasswordEncoder().encode(system_user.getPassword());
 		system_user.setPassword(criptoPassword);
 		System_User saveduser = userRepository.save(system_user);
+		
+		implementationUserDetailsService.insertsStandardAccess(saveduser.getId());
 		
 		return new ResponseEntity<System_User>(saveduser, HttpStatus.OK);
 		
