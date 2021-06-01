@@ -29,6 +29,7 @@ import com.google.gson.Gson;
 
 import project.api.rest.model.System_User;
 import project.api.rest.model.UserDTO;
+import project.api.rest.repository.TelephoneRepositorty;
 import project.api.rest.repository.UserRepository;
 import project.api.rest.service.ImplementationUserDetailsService;
 
@@ -38,6 +39,9 @@ public class IndexController {
 	
 	@Autowired /*If was a CDI would be a @Inject*/
 	private UserRepository userRepository;
+	
+	@Autowired
+	private TelephoneRepositorty telephoneRepositorty;
 	
 	@Autowired
 	private ImplementationUserDetailsService implementationUserDetailsService;
@@ -189,6 +193,12 @@ public class IndexController {
 		return new ResponseEntity<System_User>(saveduser, HttpStatus.OK);
 		
 	}	
+	
+	@DeleteMapping(value = "/deleteTelephone/{id}", produces = "application/text")
+	public String removeTelephone(@PathVariable("id") Long id) {
+		telephoneRepositorty.deleteById(id);
+		return "ok";
+	}
 
 	
 	
