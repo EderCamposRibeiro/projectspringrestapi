@@ -49,7 +49,7 @@ public class IndexController {
 	private ImplementationUserDetailsService implementationUserDetailsService;
 	
 	/*RESTful service*/
-	@GetMapping(value = "/{id}/salecode/{sale}", produces = "application/jsonp")
+	@GetMapping(value = "/{id}/salecode/{sale}", produces = "application/json")
 	public ResponseEntity<System_User> report(@PathVariable(value = "id") Long id
 			                                , @PathVariable(value = "sale") Long sale) {
 		
@@ -57,7 +57,7 @@ public class IndexController {
 		
 		/*The return would be a report/sale report!*/
 		return new ResponseEntity<System_User>(user.get(), HttpStatus.OK);
-	}	
+	}
 	
 	/* RESTful Service */
 	@GetMapping(value = "/{id}", produces = "application/json")
@@ -142,7 +142,7 @@ public class IndexController {
 
 	/*END-POINT find user by name*/
 	@GetMapping(value = "/userByName/{name}", produces = "application/json")
-	@CacheEvict(value = "cacheusers", allEntries = true)
+	//@CacheEvict(value = "cacheusers", allEntries = true)
 	@CachePut("cacheusers")
 	public ResponseEntity<Page<System_User>> userByName (@PathVariable("name") String name) throws InterruptedException{
 		
@@ -163,7 +163,7 @@ public class IndexController {
 
 	/*END-POINT find user by name*/
 	@GetMapping(value = "/userByName/{name}/page/{page}", produces = "application/json")
-	@CacheEvict(value = "cacheusers", allEntries = true)
+	//@CacheEvict(value = "cacheusers", allEntries = true)
 	@CachePut("cacheusers")
 	public ResponseEntity<Page<System_User>> userByNamePage (@PathVariable("name") String name, @PathVariable("page") int page) throws InterruptedException{
 		
