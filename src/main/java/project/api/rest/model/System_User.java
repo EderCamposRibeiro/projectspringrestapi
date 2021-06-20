@@ -16,6 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -86,6 +87,17 @@ public class System_User implements UserDetails{
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(iso = ISO.DATE, pattern="dd/MM/yyyy")
 	private Date birthDate;
+	
+	@ManyToOne
+	private Profession profession;
+	
+	public void setProfession(Profession profession) {
+		this.profession = profession;
+	}
+	
+	public Profession getProfession() {
+		return profession;
+	}
 	
 	public void setBirthDate(Date birthDate) {
 		this.birthDate = birthDate;

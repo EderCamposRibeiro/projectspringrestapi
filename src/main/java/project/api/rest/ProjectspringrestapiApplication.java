@@ -38,6 +38,11 @@ public class ProjectspringrestapiApplication implements WebMvcConfigurer{
 		.allowedMethods("*")
 		.allowedOrigins("*");
 		/*Setting the user mapping to all origins*/
+		
+		registry.addMapping("/profession/**")
+		.allowedMethods("*")
+		.allowedOrigins("*");
+		/*Setting the user mapping to all origins*/
 	}
 
 }
